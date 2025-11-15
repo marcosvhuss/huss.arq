@@ -105,7 +105,7 @@
 							<article id="contact">
 								<h2 class="major">Contato</h2>
 
-								<form method="post" action="" name="formulario-contato">
+								<form method="post" action="https://script.google.com/macros/s/AKfycbwSd3kt9tWf6tbEcn7cjWk_FBnDPvvcyiqG3Wi9hlrFu3CQca2MqRiJNMIKlUTPsoJS5g/exec" name="formulario-contato">
 									<div class="fields">
 										<div class="field half">
 											<label for="name">Nome</label>
@@ -150,7 +150,48 @@
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
-			<script src="assets/js/script.js"></script>
+
+			<script>
+  const form = document.forms['formulario-contato'];
+  const submitButton = document.getElementById('enviar');
+
+  form.addEventListener('submit', function(e) {
+    // 1. Impede o envio padrão do navegador
+    e.preventDefault(); 
+    
+    // 2. (Opcional) Mostra um feedback de "carregando"
+    submitButton.value = 'Enviando...';
+    submitButton.disabled = true;
+
+    // 3. Envia os dados do formulário em segundo plano
+    fetch(form.action, {
+      method: form.method,
+      body: new FormData(form)
+    })
+    .then(response => response.json()) // 4. Espera a resposta JSON
+    .then(data => {
+      if (data.result === 'success') {
+        // 5. AÇÃO DE SUCESSO!
+        alert('Mensagem enviada com sucesso!');
+        form.reset(); // Limpa o formulário
+      } else {
+        // Trata se o script do Google retornar um erro
+        alert('Ocorreu um erro ao enviar. Tente novamente.');
+      }
+    })
+    .catch(error => {
+      // 6. Trata erros de rede (ex: sem internet)
+      console.error('Erro:', error);
+      alert('Não foi possível conectar. Verifique sua internet.');
+    })
+    .finally(() => {
+      // 7. Reativa o botão em qualquer cenário
+      submitButton.value = 'Enviar';
+      submitButton.disabled = false;
+    });
+  });
+</script>
+			
 
 	</body>
 </html>
